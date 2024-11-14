@@ -1,0 +1,6 @@
+edu\ntnu\machine_learning\project\diamondFinder\DiamondFinder.class
+edu\ntnu\machine_learning\project\diamondFinder\PlayerState.class
+edu\ntnu\machine_learning\project\diamondFinder\CommunicationLoop.class
+edu\ntnu\machine_learning\project\diamondFinder\commands\StartCommand.class
+edu\ntnu\machine_learning\project\diamondFinder\commands\DisconnectCommand.class
+edu\ntnu\machine_learning\project\diamondFinder\commands\ConnectCommand.class

@@ -1,0 +1,14 @@
+name: DiamondFinder
+version: '1.0-SNAPSHOT'
+main: edu.ntnu.machine_learning.project.diamondFinder.DiamondFinder
+api-version: '1.21'
+commands:
+  connect:
+    description: Connects the player to the Python server.
+    usage: /connect
+  start:
+    description: Starts sending player state and receiving actions.
+    usage: /start_model
+  disconnectsocket:
+    description: Disconnects from the Python server.
+    usage: /disconnectsocket
