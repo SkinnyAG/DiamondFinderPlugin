@@ -31,12 +31,12 @@ public class PlayerState {
   public void updateSurroundingBlocks(Player player) {
     Set<Material> transparent = Set.of(Material.AIR, Material.WATER);
     Block target = player.getTargetBlock(transparent, 5);
-    Vector direction = player.getLocation().getDirection();
-    direction.setY(0);
-    direction.normalize();
+    //Vector direction = player.getLocation().getDirection();
+    //direction.setY(0);
+    //direction.normalize();
 
     surroundingBlocks.clear();
-    Block currentBlock = player.getLocation().getBlock();
+    Block currentBlock = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
     Block above = currentBlock.getRelative(0,3,0);
 
     Block underEast = currentBlock.getRelative(BlockFace.EAST);
@@ -58,6 +58,14 @@ public class PlayerState {
     Block aboveWest = upperWest.getRelative(BlockFace.UP);
     Block aboveNorth = upperNorth.getRelative(BlockFace.UP);
     Block aboveSouth = upperSouth.getRelative(BlockFace.UP);
+
+    /*player.sendMessage("Target: " + target + ", below: " + currentBlock +
+            ", above: " + above + ", underEast: " + underEast + ", underWest: " + underWest +
+            ", underNorth: " + underNorth + ", underSouth: " + underSouth + ", lowerEast: " + lowerEast +
+            ", lowerWest: " + lowerWest + ", lowerNorth: " + lowerNorth, ", lowerSouth: " + lowerSouth +
+            ", upperEast: " + upperEast + ", upperWest: " + upperWest + ", upperNorth: " + upperNorth +
+            ", upperSouth: " + upperSouth + ", aboveEast: " + aboveEast + ", aboveWest: " + aboveWest +
+            ", aboveNorth: " + aboveNorth + ", aboveSouth: " + aboveSouth);*/
 
     surroundingBlocks.put("targetBlock", target.getType());
 
@@ -83,7 +91,7 @@ public class PlayerState {
     surroundingBlocks.put("aboveWest", aboveWest.getType());
     surroundingBlocks.put("aboveNorth", aboveNorth.getType());
     surroundingBlocks.put("aboveSouth", aboveSouth.getType());
-
+    //player.sendMessage("Surrounding blocks: " + surroundingBlocks);
     /*
     surroundingBlocks.put("targetBlock", target.getType());
     surroundingBlocks.put("forwardAbove", getRelativeBlock(player, direction.clone().add(new Vector(0,2,0))).getType());

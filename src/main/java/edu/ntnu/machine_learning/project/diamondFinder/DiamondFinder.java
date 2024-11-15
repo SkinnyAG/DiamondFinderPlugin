@@ -152,6 +152,25 @@ public final class DiamondFinder extends JavaPlugin implements Listener {
   }
 
   private String moveForward(Player player) {
+    Block down = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
+
+    Block forwardUnder = down.getRelative(player.getFacing());
+    Block forwardLower = forwardUnder.getRelative(BlockFace.UP);
+    Block forwardUpper = forwardLower.getRelative(BlockFace.UP);
+    player.sendMessage("Block below: " + down.getType() +
+            ", forward under: " + forwardUnder.getType() +
+            ", forward lower: " + forwardLower.getType() +
+            ", forward upper: " + forwardUpper.getType());
+
+    if (down.isSolid() && forwardUnder.isSolid() && !forwardLower.isSolid() && !forwardUpper.isSolid()) {
+      player.sendMessage("You moved forward");
+      player.teleport(forwardLower.getLocation().add(0.5,0,0.5));
+      return "successful-forward";
+    } else {
+      player.sendMessage("You can't move forward");
+      return "illegal-forward";
+    }
+    /*
     Location currentLocation = player.getLocation();
     Vector direction = currentLocation.getDirection();
     direction.setY(0);
@@ -171,10 +190,27 @@ public final class DiamondFinder extends JavaPlugin implements Listener {
     } else {
       player.sendMessage("You cant move forward");
       return "illegal-forward";
-    }
+    }*/
   }
 
   private String moveDiagonallyUp(Player player) {
+    Block down = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
+
+    Block forwardLower = down.getRelative(player.getFacing()).getRelative(BlockFace.UP);
+    Block forwardUpper = forwardLower.getRelative(BlockFace.UP);
+    Block forwardAbove = forwardUpper.getRelative(BlockFace.UP);
+    Block above = down.getRelative(0,3,0);
+
+    if (down.isSolid() && forwardLower.isSolid() && !forwardUpper.isSolid() &&
+            !forwardAbove.isSolid() && !above.isSolid()) {
+      player.sendMessage("You moved diagonally up");
+      player.teleport(forwardUpper.getLocation().add(0.5,0,0.5));
+      return "successful-diag";
+    } else {
+      player.sendMessage("You can't move diagonally up");
+      return "illegal-diag";
+    }
+    /*
     Location currentLocation = player.getLocation();
     Vector direction = currentLocation.getDirection();
     direction.setY(0);
@@ -198,10 +234,27 @@ public final class DiamondFinder extends JavaPlugin implements Listener {
     } else {
       player.sendMessage("You can't move diagonally up");
       return "illegal-diag";
-    }
+    }*/
   }
 
   private String moveDiagonallyDown(Player player) {
+    Block down = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
+
+    Block forwardDown = down.getRelative(player.getFacing());
+    Block forwardDownUnder = forwardDown.getRelative(BlockFace.DOWN);
+    Block forwardLower = forwardDown.getRelative(BlockFace.UP);
+    Block forwardUpper = forwardLower.getRelative(BlockFace.UP);
+
+    if (down.isSolid() && forwardDownUnder.isSolid() && !forwardDown.isSolid() &&
+            !forwardLower.isSolid() && !forwardUpper.isSolid()) {
+      player.sendMessage("You moved diagonally down");
+      player.teleport(forwardDown.getLocation().add(0.5,0,0.5));
+      return "successful-diag";
+    } else {
+      player.sendMessage("You can't move diagonally down");
+      return "illegal-diag";
+    }
+    /*
     Location currentLocation = player.getLocation();
     Vector direction = currentLocation.getDirection();
     direction.setY(0);
@@ -224,7 +277,7 @@ public final class DiamondFinder extends JavaPlugin implements Listener {
     } else {
       player.sendMessage("You can't move diagonally down");
       return "illegal-diag";
-    }
+    }*/
   }
 
   private String mineBlock(Player player) {
@@ -244,14 +297,17 @@ public final class DiamondFinder extends JavaPlugin implements Listener {
 
     } else {
       player.sendMessage("You are not allowed to mine this");
-      return "illegal-mine";
+      if (!target.isSolid()) {
+        return "illegal-mine-air";
+      } else {
+        return "illegal-mine-bedrock";
+      }
     }
   }
 
   private String mineLowerBlock(Player player) {
-    Set<Material> transparent = Set.of(Material.AIR, Material.WATER);
-    BlockFace direction = player.getFacing();
-    Block target = player.getLocation().getBlock().getRelative(direction).getRelative(BlockFace.UP);
+    //Set<Material> transparent = Set.of(Material.AIR, Material.WATER);
+    Block target = player.getLocation().getBlock().getRelative(player.getFacing());
     if (target.isSolid() && target.getType() != Material.BEDROCK) {
       Collection<ItemStack> drops = target.getDrops();
 
@@ -264,11 +320,10 @@ public final class DiamondFinder extends JavaPlugin implements Listener {
       return ("successful-mine-" + originalTarget).toLowerCase();
 
     } else {
+      player.sendMessage("You are not allowed to mine this");
       if (!target.isSolid()) {
-        player.sendMessage("You are not allowed to mine this");
         return "illegal-mine-air";
       } else  {
-        player.sendMessage("You are not allowed to mine this");
         return "illegal-mine-bedrock";
       }
     }

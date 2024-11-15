@@ -85,6 +85,7 @@ public class CommunicationLoop extends BukkitRunnable {
             result,
             player.getFacing().name()
     );
+    //player.sendMessage("Facing: " + player.getFacing().name());
     currentState.updateSurroundingBlocks(player);
     String jsonState = new Gson().toJson(currentState);
     out.println(jsonState);
