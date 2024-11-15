@@ -163,8 +163,11 @@ public final class DiamondFinder extends JavaPlugin implements Listener {
             ", forward upper: " + forwardUpper.getType());
 
     if (down.isSolid() && forwardUnder.isSolid() && !forwardLower.isSolid() && !forwardUpper.isSolid()) {
+      float yaw = player.getYaw();
+      float pitch = player.getPitch();
       player.sendMessage("You moved forward");
       player.teleport(forwardLower.getLocation().add(0.5,0,0.5));
+      player.setRotation(yaw, pitch);
       return "successful-forward";
     } else {
       player.sendMessage("You can't move forward");
@@ -203,8 +206,11 @@ public final class DiamondFinder extends JavaPlugin implements Listener {
 
     if (down.isSolid() && forwardLower.isSolid() && !forwardUpper.isSolid() &&
             !forwardAbove.isSolid() && !above.isSolid()) {
+      float yaw = player.getYaw();
+      float pitch = player.getPitch();
       player.sendMessage("You moved diagonally up");
       player.teleport(forwardUpper.getLocation().add(0.5,0,0.5));
+      player.setRotation(yaw, pitch);
       return "successful-diag";
     } else {
       player.sendMessage("You can't move diagonally up");
@@ -247,8 +253,11 @@ public final class DiamondFinder extends JavaPlugin implements Listener {
 
     if (down.isSolid() && forwardDownUnder.isSolid() && !forwardDown.isSolid() &&
             !forwardLower.isSolid() && !forwardUpper.isSolid()) {
+      float yaw = player.getYaw();
+      float pitch = player.getPitch();
       player.sendMessage("You moved diagonally down");
       player.teleport(forwardDown.getLocation().add(0.5,0,0.5));
+      player.setRotation(yaw, pitch);
       return "successful-diag";
     } else {
       player.sendMessage("You can't move diagonally down");
@@ -320,7 +329,7 @@ public final class DiamondFinder extends JavaPlugin implements Listener {
       return ("successful-mine-" + originalTarget).toLowerCase();
 
     } else {
-      player.sendMessage("You are not allowed to mine this");
+      player.sendMessage("You are not allowed to mine this (lower-block-mine)");
       if (!target.isSolid()) {
         return "illegal-mine-air";
       } else  {
