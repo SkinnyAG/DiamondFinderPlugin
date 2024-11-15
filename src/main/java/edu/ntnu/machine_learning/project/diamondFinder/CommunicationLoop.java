@@ -82,7 +82,8 @@ public class CommunicationLoop extends BukkitRunnable {
             (int) player.getY(),
             (int) player.getZ(),
             Math.round(player.getPitch()),
-            result
+            result,
+            player.getFacing().name()
     );
     currentState.updateSurroundingBlocks(player);
     String jsonState = new Gson().toJson(currentState);

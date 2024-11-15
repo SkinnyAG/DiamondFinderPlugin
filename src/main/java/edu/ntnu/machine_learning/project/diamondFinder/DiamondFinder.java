@@ -8,6 +8,7 @@ import io.papermc.paper.event.block.BlockBreakBlockEvent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -59,22 +61,22 @@ public final class DiamondFinder extends JavaPlugin implements Listener {
   }
 
   public void startCommunicationLoop() {
-    if (communicationLoop == null || communicationLoop.isCancelled()) {
+      getLogger().info("Inside communication loop");
       communicationLoop = new CommunicationLoop(this, out, in);
       //communicationLoop.runTaskTimerAsynchronously(this, 0L, 100L);
       communicationLoop.runTaskAsynchronously(this);
-    }
   }
 
   public void stopCommunicationLoop() {
-    if (communicationLoop != null && !communicationLoop.isCancelled()) {
+      getLogger().info("Should stop communication loop");
       communicationLoop.cancel();
-    }
+      getLogger().info("Communication loop stopped: " + communicationLoop.isCancelled());
   }
 
   public void closeSocket() {
     try {
       if (socket != null && !socket.isClosed()) {
+        out.println("/disconnect");
         socket.close();
       }
       isConnected = false;
@@ -114,6 +116,7 @@ public final class DiamondFinder extends JavaPlugin implements Listener {
       case "turn-right" -> turnRight(player);
       case "move-forward" -> moveForward(player);
       case "mine" -> mineBlock(player);
+      case "mine-lower" -> mineLowerBlock(player);
       case "tilt-down" -> tiltDown(player);
       case "tilt-up" -> tiltUp(player);
       case "forward-up" -> moveDiagonallyUp(player);
@@ -242,6 +245,32 @@ public final class DiamondFinder extends JavaPlugin implements Listener {
     } else {
       player.sendMessage("You are not allowed to mine this");
       return "illegal-mine";
+    }
+  }
+
+  private String mineLowerBlock(Player player) {
+    Set<Material> transparent = Set.of(Material.AIR, Material.WATER);
+    BlockFace direction = player.getFacing();
+    Block target = player.getLocation().getBlock().getRelative(direction).getRelative(BlockFace.UP);
+    if (target.isSolid() && target.getType() != Material.BEDROCK) {
+      Collection<ItemStack> drops = target.getDrops();
+
+      for (ItemStack drop : drops) {
+        player.getInventory().addItem(drop);
+      }
+      Material originalTarget = target.getType();
+      target.setType(Material.AIR);
+      player.sendMessage("You mined: " + originalTarget);
+      return ("successful-mine-" + originalTarget).toLowerCase();
+
+    } else {
+      if (!target.isSolid()) {
+        player.sendMessage("You are not allowed to mine this");
+        return "illegal-mine-air";
+      } else  {
+        player.sendMessage("You are not allowed to mine this");
+        return "illegal-mine-bedrock";
+      }
     }
   }
 

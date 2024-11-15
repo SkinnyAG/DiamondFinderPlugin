@@ -27,7 +27,8 @@ public class DisconnectCommand implements CommandExecutor {
     }
 
     plugin.stopCommunicationLoop();
-    //plugin.closeSocket();
+    plugin.closeSocket();
+
     player.sendMessage("Communication with main server stopped");
     return true;
   }
