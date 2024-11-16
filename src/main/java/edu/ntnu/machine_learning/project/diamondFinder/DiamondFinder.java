@@ -117,8 +117,12 @@ public final class DiamondFinder extends JavaPlugin implements Listener {
       case "move-forward" -> moveForward(player);
       case "mine" -> mineBlock(player);
       case "mine-lower" -> mineLowerBlock(player);
-      case "tilt-down" -> tiltDown(player);
-      case "tilt-up" -> tiltUp(player);
+      case "mine-below-lower" -> mineBelowLowerBlock(player);
+      case "mine-above-upper" -> mineAboveUpperBlock(player);
+      case "mine-down" -> mineDown(player);
+      case "mine-above" -> mineAbove(player);
+      //case "tilt-down" -> tiltDown(player);
+      //case "tilt-up" -> tiltUp(player);
       case "forward-up" -> moveDiagonallyUp(player);
       case "forward-down" -> moveDiagonallyDown(player);
       default -> {
@@ -338,6 +342,108 @@ public final class DiamondFinder extends JavaPlugin implements Listener {
     }
   }
 
+  private String mineBelowLowerBlock(Player player) {
+    Block blockToMine = player.getLocation().getBlock().getRelative(BlockFace.DOWN).getRelative(player.getFacing());
+    Block blockAbove = blockToMine.getRelative(BlockFace.UP);
+
+    if (blockToMine.isSolid() && blockToMine.getType() != Material.BEDROCK && !blockAbove.isSolid()) {
+      Collection<ItemStack> drops = blockToMine.getDrops();
+
+      for (ItemStack drop : drops) {
+        player.getInventory().addItem(drop);
+      }
+      Material originalTarget = blockToMine.getType();
+      blockToMine.setType(Material.AIR);
+      player.sendMessage("You mined: " + originalTarget);
+      return ("successful-mine-" + originalTarget).toLowerCase();
+
+    } else {
+      player.sendMessage("You are not allowed to mine this (below-lower-block-mine)");
+      if (!blockToMine.isSolid()) {
+        return "illegal-mine-air";
+      } else if (blockAbove.isSolid())  {
+        return "illegal-diag-mine";
+      } else {
+        return "illegal-mine-bedrock";
+      }
+    }
+  }
+
+  private String mineAboveUpperBlock(Player player) {
+    Block blockToMine = player.getLocation().getBlock().getRelative(0,2, 0).getRelative(player.getFacing());
+    Block belowTarget = blockToMine.getRelative(BlockFace.DOWN);
+    Block abovePlayer = blockToMine.getRelative(player.getFacing().getOppositeFace());
+
+    if (blockToMine.isSolid() && blockToMine.getType() != Material.BEDROCK && (!belowTarget.isSolid() || !abovePlayer.isSolid())) {
+      Collection<ItemStack> drops = blockToMine.getDrops();
+
+      for (ItemStack drop : drops) {
+        player.getInventory().addItem(drop);
+      }
+      Material originalTarget = blockToMine.getType();
+      blockToMine.setType(Material.AIR);
+      player.sendMessage("You mined: " + originalTarget);
+      return ("successful-mine-" + originalTarget).toLowerCase();
+
+    } else {
+      player.sendMessage("You are not allowed to mine this (above-upper-block-mine)");
+      if (!blockToMine.isSolid()) {
+        return "illegal-mine-air";
+      } else if (belowTarget.isSolid() && abovePlayer.isSolid())  {
+        return "illegal-diag-mine";
+      } else {
+        return "illegal-mine-bedrock";
+      }
+    }
+  }
+
+  private String mineDown(Player player) {
+    Block blockToMine = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
+    if (blockToMine.isSolid() && blockToMine.getType() != Material.BEDROCK) {
+      Collection<ItemStack> drops = blockToMine.getDrops();
+
+      for (ItemStack drop : drops) {
+        player.getInventory().addItem(drop);
+      }
+      Material originalTarget = blockToMine.getType();
+      blockToMine.setType(Material.AIR);
+      player.sendMessage("You mined: " + originalTarget);
+      return ("successful-mine-" + originalTarget).toLowerCase();
+
+    } else {
+      player.sendMessage("You are not allowed to mine this (mine-down)");
+      if (!blockToMine.isSolid()) {
+        return "illegal-mine-air";
+      } else  {
+        return "illegal-mine-bedrock";
+      }
+    }
+  }
+
+  private String mineAbove(Player player) {
+    Block blockToMine = player.getLocation().getBlock().getRelative(0,2,0);
+    if (blockToMine.isSolid() && blockToMine.getType() != Material.BEDROCK) {
+      Collection<ItemStack> drops = blockToMine.getDrops();
+
+      for (ItemStack drop : drops) {
+        player.getInventory().addItem(drop);
+      }
+      Material originalTarget = blockToMine.getType();
+      blockToMine.setType(Material.AIR);
+      player.sendMessage("You mined: " + originalTarget);
+      return ("successful-mine-" + originalTarget).toLowerCase();
+
+    } else {
+      player.sendMessage("You are not allowed to mine this (mine-above)");
+      if (!blockToMine.isSolid()) {
+        return "illegal-mine-air";
+      } else  {
+        return "illegal-mine-bedrock";
+      }
+    }
+  }
+
+  /*
   private String tiltDown(Player player) {
     float yaw = player.getYaw();
     float pitch = player.getPitch();
@@ -362,5 +468,5 @@ public final class DiamondFinder extends JavaPlugin implements Listener {
     player.setRotation(yaw, pitch - 45);
     player.sendMessage("You tilted up");
     return "successful-tilt";
-  }
+  }*/
 }

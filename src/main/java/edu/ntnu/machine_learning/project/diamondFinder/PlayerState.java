@@ -13,17 +13,17 @@ import java.util.Set;
 
 public class PlayerState {
   private int x, y, z;
-  private int tilt;
+  //private int tilt;
   private String actionResult;
   private String direction;
   private Map<String, Material> surroundingBlocks;
 
-  public PlayerState(int x, int y, int z, int tilt, String actionResult, String direction) {
+  public PlayerState(int x, int y, int z, String actionResult, String direction) {
     //this.playerName = playerName;
     this.x = x;
     this.y = y;
     this.z = z;
-    this.tilt = tilt;
+    //this.tilt = tilt;
     this.actionResult = actionResult;
     this.direction = direction;
     this.surroundingBlocks = new HashMap<>();

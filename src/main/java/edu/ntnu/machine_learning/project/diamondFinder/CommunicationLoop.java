@@ -81,7 +81,6 @@ public class CommunicationLoop extends BukkitRunnable {
             (int) player.getX(),
             (int) player.getY(),
             (int) player.getZ(),
-            Math.round(player.getPitch()),
             result,
             player.getFacing().name()
     );
