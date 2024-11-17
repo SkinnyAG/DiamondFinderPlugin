@@ -1,31 +1,21 @@
 package edu.ntnu.machine_learning.project.diamondFinder;
 
-import com.google.gson.Gson;
 import edu.ntnu.machine_learning.project.diamondFinder.commands.ConnectCommand;
 import edu.ntnu.machine_learning.project.diamondFinder.commands.DisconnectCommand;
 import edu.ntnu.machine_learning.project.diamondFinder.commands.StartCommand;
-import io.papermc.paper.event.block.BlockBreakBlockEvent;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 public final class DiamondFinder extends JavaPlugin implements Listener {
@@ -37,22 +27,10 @@ public final class DiamondFinder extends JavaPlugin implements Listener {
 
   @Override
   public void onEnable() {
-    //getServer().getPluginManager().registerEvents(this, this);
     getCommand("connect").setExecutor(new ConnectCommand(this));
     getCommand("start").setExecutor(new StartCommand(this));
     getCommand("disconnectsocket").setExecutor(new DisconnectCommand(this));
   }
-
-  /*@EventHandler
-  public void onBlockBreak(BlockBreakEvent event) {
-    event.setDropItems(false);
-
-    List<ItemStack> drops = event.getBlock().getDrops().stream().toList();
-
-    for (ItemStack drop : drops) {
-      event.getPlayer().getInventory().addItem(drop);
-    }
-  }*/
 
   @Override
   public void onDisable() {
@@ -63,7 +41,6 @@ public final class DiamondFinder extends JavaPlugin implements Listener {
   public void startCommunicationLoop() {
       getLogger().info("Inside communication loop");
       communicationLoop = new CommunicationLoop(this, out, in);
-      //communicationLoop.runTaskTimerAsynchronously(this, 0L, 100L);
       communicationLoop.runTaskAsynchronously(this);
   }
 
@@ -161,10 +138,6 @@ public final class DiamondFinder extends JavaPlugin implements Listener {
     Block forwardUnder = down.getRelative(player.getFacing());
     Block forwardLower = forwardUnder.getRelative(BlockFace.UP);
     Block forwardUpper = forwardLower.getRelative(BlockFace.UP);
-    player.sendMessage("Block below: " + down.getType() +
-            ", forward under: " + forwardUnder.getType() +
-            ", forward lower: " + forwardLower.getType() +
-            ", forward upper: " + forwardUpper.getType());
 
     if (down.isSolid() && forwardUnder.isSolid() && !forwardLower.isSolid() && !forwardUpper.isSolid()) {
       float yaw = player.getYaw();
@@ -177,27 +150,6 @@ public final class DiamondFinder extends JavaPlugin implements Listener {
       player.sendMessage("You can't move forward");
       return "illegal-forward";
     }
-    /*
-    Location currentLocation = player.getLocation();
-    Vector direction = currentLocation.getDirection();
-    direction.setY(0);
-    direction.normalize();
-
-    Location targetLocation = currentLocation.clone().add(direction);
-
-    Block lowerBlock = targetLocation.getBlock();
-    Block upperBlock = targetLocation.clone().add(0,1,0).getBlock();
-
-    Block belowBlock = targetLocation.clone().add(0,-1,0).getBlock();
-
-    if (lowerBlock.getType() == Material.AIR && upperBlock.getType() == Material.AIR && belowBlock.getType() != Material.AIR) {
-      player.teleport(targetLocation);
-      player.sendMessage("You moved forward");
-      return "successful-forward";
-    } else {
-      player.sendMessage("You cant move forward");
-      return "illegal-forward";
-    }*/
   }
 
   private String moveDiagonallyUp(Player player) {
@@ -220,31 +172,6 @@ public final class DiamondFinder extends JavaPlugin implements Listener {
       player.sendMessage("You can't move diagonally up");
       return "illegal-diag";
     }
-    /*
-    Location currentLocation = player.getLocation();
-    Vector direction = currentLocation.getDirection();
-    direction.setY(0);
-    direction.normalize();
-
-    Location targetLocation = currentLocation.clone().add(direction).add(0,1,0);
-
-    Block middleFrontBlock = targetLocation.getBlock();
-    Block lowerFrontBlock = targetLocation.clone().add(0,-1,0).getBlock();
-    Block upperFrontBlock = targetLocation.clone().add(0,1,0).getBlock();
-    Block roofBlock = currentLocation.clone().add(0,2,0).getBlock();
-
-
-    if (lowerFrontBlock.isSolid() &&
-            !middleFrontBlock.isSolid() &&
-            !upperFrontBlock.isSolid() &&
-            !roofBlock.isSolid()) {
-      player.teleport(targetLocation);
-      player.sendMessage("You moved diagonally up");
-      return "successful-diag";
-    } else {
-      player.sendMessage("You can't move diagonally up");
-      return "illegal-diag";
-    }*/
   }
 
   private String moveDiagonallyDown(Player player) {
@@ -267,36 +194,11 @@ public final class DiamondFinder extends JavaPlugin implements Listener {
       player.sendMessage("You can't move diagonally down");
       return "illegal-diag";
     }
-    /*
-    Location currentLocation = player.getLocation();
-    Vector direction = currentLocation.getDirection();
-    direction.setY(0);
-    direction.normalize();
-
-    Location targetLocation = currentLocation.clone().add(direction).add(0,-1,0);
-
-    Block frontBlockUpper = targetLocation.clone().add(0,2,0).getBlock();
-    Block frontBlockLower = targetLocation.clone().add(0,1,0).getBlock();
-    Block targetBlock = targetLocation.getBlock();
-    Block blockBelowTarget = targetLocation.clone().add(0,-1,0).getBlock();
-
-    if (!frontBlockUpper.isSolid() &&
-            !frontBlockLower.isSolid() &&
-            !targetBlock.isSolid() &&
-            blockBelowTarget.isSolid()) {
-      player.teleport(targetLocation);
-      player.sendMessage("You moved diagonally down");
-      return "successful-diag";
-    } else {
-      player.sendMessage("You can't move diagonally down");
-      return "illegal-diag";
-    }*/
   }
 
   private String mineBlock(Player player) {
     Set<Material> transparent = Set.of(Material.AIR, Material.WATER);
     Block target = player.getTargetBlock(transparent, 5);
-    //player.sendMessage("Your target is: " + target.getType());
     if (target.isSolid() && target.getType() != Material.BEDROCK) {
       Collection<ItemStack> drops = target.getDrops();
 
@@ -319,7 +221,6 @@ public final class DiamondFinder extends JavaPlugin implements Listener {
   }
 
   private String mineLowerBlock(Player player) {
-    //Set<Material> transparent = Set.of(Material.AIR, Material.WATER);
     Block target = player.getLocation().getBlock().getRelative(player.getFacing());
     if (target.isSolid() && target.getType() != Material.BEDROCK) {
       Collection<ItemStack> drops = target.getDrops();
