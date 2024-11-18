@@ -1,5 +1,11 @@
 # Diamond Finder Plugin
 Required custom plugin for communication between the Diamond Finder model and the Minecraft environment/agent.
+
+Building the plugin .jar file
+`mvn clean package`
+
+For setting up the Minecraft server, follow the steps in this repository: //TODO
+
 ## Comunication Loop
 Once loaded into the game, the player would start setting up communication with the python server using a "/connect" command, this requires the Python server to be running. A socket connection is then established between the two on localhost:5000.
 
