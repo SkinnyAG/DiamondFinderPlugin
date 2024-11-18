@@ -3,6 +3,8 @@ Required custom plugin for communication between the Diamond Finder model and th
 
 ***This plugin is meant to run on Minecraft version 1.21.1/1.21***
 
+The plugin is built with [PaperMC](https://papermc.io/), and thus is compatible with both [Bukkit](https://dev.bukkit.org/) and [SpigotMC](https://www.spigotmc.org/) plugin APIs.
+
 Building the plugin .jar file
 
 `$ mvn clean package`
