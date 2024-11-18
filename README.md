@@ -1,5 +1,6 @@
 # Diamond Finder Plugin
 Required custom plugin for communication between the Diamond Finder model and the Minecraft environment/agent.
+*This plugin is meant to run on Minecraft 1.21.1*
 
 Building the plugin .jar file
 `mvn clean package`
