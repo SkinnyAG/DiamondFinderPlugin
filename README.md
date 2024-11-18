@@ -1,5 +1,7 @@
 # Diamond Finder Plugin
 Required custom plugin for communication between the Diamond Finder model and the Minecraft environment/agent.
+- [OreAnalyzer](https://github.com/MindChirp/ore-analyzer)
+- [DiamondFinder](https://github.com/SkinnyAG/DiamondFinder)
 
 ***This plugin is meant to run on Minecraft version 1.21.1/1.21***
 
