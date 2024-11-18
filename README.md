@@ -15,6 +15,10 @@ Diving into how to set up a Minecraft server for testing the model is outside of
 - [FastAsyncWorldEdit](https://modrinth.com/plugin/fastasyncworldedit)
 - The DiamondFinder .jar
 
+Once on the server, it is recommended to enable night vision with the command:
+
+`/effect give <playerName> minecraft:night_vision infinite`
+
 ## Comunication Loop
 Once loaded into the game, the player would start setting up communication with the python server using a "/connect" command, this requires the Python server to be running. A socket connection is then established between the two on localhost:5000.
 
