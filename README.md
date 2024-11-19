@@ -31,3 +31,13 @@ The reset would generate a brand new mining area for each episode, with differen
 The actionResult determines whether the action was successful or illegal and maps to an appropriate reward value (not calculated when "RESET" is sent).
 
 If the player wishes to stop the training before all planned episodes are completed, they could issue a "/disconnectsocket" command to stop the communication loop, close the socket connection and have the model save training statistics.
+
+## Features
+### Reset Environment
+When env.reset() is called in the model and "RESET" is sent over the socket, the plugin will regenerate a brand new mining area with an incremented seed such that every episode is different. The generated area is 128x62x128, all caves and structures are removed and filled in with Deepslate while the following ores remain: Diamond, Iron, Gold, Redstone and Lapis. The area is regenerated using WorldEdit. When the agent approaches the border of the mining area, it will expand and generate a new area. 
+
+### Agent surroundings
+The bukkit API provides access to the player object and lets us access the surrounding blocks. These are stored in a map and sent to the model as part of the players state, along with their coordinates.
+
+### Agent actions
+The bukkit API also allows controlling the player programatically, which lets the model tell the agent what movement and actions it should perform. The result of these actions are sent back to the model and an appropriate reward is calculated.
